@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+
+<body>
+    <header>
+        <h3>Click on video to play or pause. Move mouse to change the hover.</h3>
+    </header>
+
+    <main>
+        <div class="video-compare-container">
+            <video id="input_2" loop="true" autoplay="true">
+                <source src="input_2.mp4">
+            </video>
+            <div class="video-clipper">
+                <video id="input_1" loop="true" autoplay="true">
+                    <source src="input_1.mp4">
+                </video>
+
+            </div>
+            <div class="separator" style="display: flex;"></div>
+        </div>
+
+        <div style="margin-top: 0.6rem;" class="loader hide"></div>
+    </main>
+
+    <script>
+        function play() {
+            input_1.currentTime = input_2.currentTime
+
+            input_1.play()
+            input_2.play()
+
+        }
+
+        function pause() {
+            input_1.pause()
+            input_2.pause()
+
+            input_1.currentTime = input_2.currentTime
+
+        }
+
+
+        function onVideoClick() {
+            if (input_1.paused)
+                play()
+            else
+                pause()
+        }
+
+        function onVideoPause() {
+            loader.classList.remove('hide')
+        }
+
+        function onVideoPlaying() {
+            loader.classList.add('hide')
+        }
+
+
+        function trackLocation(e) {
+            const rect = videoContainer.getBoundingClientRect()
+            const position = ((e.pageX - rect.left) / videoContainer.offsetWidth) * 100
+
+            if (position <= 100) {
+                videoClipper.style.width = position + '%'
+
+                clippedVideo.style.width = ((100 / position) * 100) + '%'
+                clippedVideo.style.zIndex = 3
+
+                separator.style.left = e.pageX + 'px'
+                separator.style.zIndex = 3
+            }
+        }
+
+
+        const input_1 = document.getElementById('input_1')
+        const input_2 = document.getElementById('input_2')
+        const videoContainer = document.querySelector('div.video-compare-container')
+        const videoClipper = document.querySelector('div.video-clipper')
+        const clippedVideo = document.querySelector('div.video-clipper video')
+        const separator = document.querySelector('div.separator')
+        const loader = document.querySelector('div.loader')
+
+        input_1.addEventListener('click', onVideoClick)
+        input_2.addEventListener('click', onVideoClick)
+
+        input_1.addEventListener('play', onVideoPlaying)
+        input_1.addEventListener('pause', onVideoPause)
+
+        videoContainer.addEventListener('mousemove', trackLocation, false)
+        videoContainer.addEventListener('touchstart', trackLocation, false)
+        videoContainer.addEventListener('touchmove', trackLocation, false)
+    </script>
+</body>
+
+</html>
